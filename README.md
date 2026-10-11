@@ -1,18 +1,18 @@
 # Calculator Project
 
-This repository contains a simple calculator implementation built as a web app and a Java version for local experimentation.
+This repository contains a Java Swing calculator, plus a small browser-based daily task list.
 
 ## Files
-- `index.html` – calculator UI for the browser
-- `Calculator.java` – Java calculator implementation
+- `Calculator.java` – Java calculator (desktop app)
+- `index.html` – daily task list for the browser
 
 ## Run
 
-Open `index.html` in a browser to use the calculator UI.
-
-To compile the Java version:
+To compile and run the calculator:
 
 ```bash
 javac Calculator.java
 java Calculator
 ```
+
+Open `index.html` in a browser to use the task list.

@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class Calculator extends JFrame {
     private final JTextField display;
@@ -131,6 +133,10 @@ public class Calculator extends JFrame {
         } else {
             currentInput = currentInput.substring(0, currentInput.length() - 1);
         }
+
+        if ("-".equals(currentInput)) {
+            currentInput = "";
+        }
         updateDisplay();
     }
 
@@ -168,11 +174,18 @@ public class Calculator extends JFrame {
         }
 
         if (currentInput.isEmpty()) {
+            if (!storedValue.isEmpty()) {
+                pendingOperator = operator;
+                updateDisplay();
+            }
             return;
         }
 
         if (!storedValue.isEmpty() && !pendingOperator.isEmpty()) {
             evaluate(false);
+            if (hasError) {
+                return;
+            }
         }
 
         storedValue = currentInput;
@@ -188,9 +201,6 @@ public class Calculator extends JFrame {
         }
 
         if (storedValue.isEmpty() || currentInput.isEmpty() || pendingOperator.isEmpty()) {
-            if (fromEqualsButton) {
-                return;
-            }
             return;
         }
 
@@ -225,6 +235,10 @@ public class Calculator extends JFrame {
         }
 
         String formattedResult = formatResult(result);
+        if (hasError) {
+            updateDisplay();
+            return;
+        }
         currentInput = formattedResult;
         storedValue = "";
         pendingOperator = "";
@@ -245,11 +259,11 @@ public class Calculator extends JFrame {
             return "Error";
         }
 
-        if (result == Math.rint(result)) {
-            return String.valueOf((long) result);
+        BigDecimal rounded = new BigDecimal(result).round(new MathContext(12)).stripTrailingZeros();
+        if (rounded.signum() == 0) {
+            return "0";
         }
-
-        return String.valueOf(result);
+        return rounded.toPlainString();
     }
 
     private class CalculatorButtonListener implements ActionListener {
